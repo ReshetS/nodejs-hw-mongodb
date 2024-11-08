@@ -17,16 +17,15 @@ export async function getContacts({
     query.where('isFavourite').equals(filter.isFavourite);
   }
 
-  const totalItems = await ContactsCollection.find()
-    .merge(query)
-    .countDocuments();
-
-  const data = await ContactsCollection.find()
-    .merge(query)
-    .skip(skip)
-    .limit(perPage)
-    .sort({ [sortBy]: sortOrder })
-    .exec();
+  const [totalItems, data] = await Promise.all([
+    ContactsCollection.find().merge(query).countDocuments(),
+    ContactsCollection.find()
+      .merge(query)
+      .skip(skip)
+      .limit(perPage)
+      .sort({ [sortBy]: sortOrder })
+      .exec(),
+  ]);
 
   const paginationData = calculatePaginationData(totalItems, page, perPage);
   return {

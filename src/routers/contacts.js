@@ -36,6 +36,6 @@ router.put(
   validateBody(createContactSchema),
   ctrlWrapper(upsertContactController),
 );
-router.delete('/:contactId', ctrlWrapper(deleteContactController));
+router.delete('/:contactId', isValidId, ctrlWrapper(deleteContactController));
 
 export default router;
